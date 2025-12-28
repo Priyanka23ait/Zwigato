@@ -1,46 +1,68 @@
 import React, { useEffect, useState } from 'react';
 import Shimmer from './Shimmer';
 import { useParams } from 'react-router-dom';
-import {RESTAURANTS_URL} from '../utils/Constant.js';  
+import useRestaurantMenu from '../utils/useRestaurantMenu.js'; 
+import RestaurantCategory from './RestaurantCategory.js';
 
 const RestaurantMenu = () => {
-    const [resInfo, setResInfo] = useState(null);
+    const [showCategoryIndex, setShowCategoryIndex] = useState(0);
     const paramResId = useParams();
+    console.log("Param Res Id ", paramResId.resid);
 
-    useEffect(() => {
-        fetchMenu();
-        console.log("Restaurant Menu useEffect");
-    }, [paramResId.resid]);
+    const resData= useRestaurantMenu(paramResId.resid);
 
-    async function fetchMenu() {
-        const data = await fetch(RESTAURANTS_URL);
-        const json = await data.json();
-        console.log(json.data);
-        const restaurants = json.data.cards[1].card.card.gridElements.infoWithStyle.restaurants;
-        const restaurant = restaurants.find(res => res.info.id === paramResId.resid);
-        setResInfo(restaurant ? restaurant.info : null);
-        console.log(restaurant ? restaurant.info : null);
+    console.log('ResInfo from custom hook:', {resData});
+     
+    if(resData === null || resData === undefined) {
+        return <Shimmer/>;
     }
+    
+    
+    const resInfo = resData?.data?.card?.card?.info;
+    console.log("Res Info " + resInfo);
 
-    if (resInfo === null) return <Shimmer />;
+    const resItemCategoryCards = resData.data?.card?.card?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter(c=>c.card?.card?.["@type"] == "ItemCategory");
+
+    console.log("Res Item category " + resItemCategoryCards);
+    
+    if (!resInfo) return <div className="menu-container">Restaurant not found</div>;
 
     const { name, cuisines, costForTwo, avgRating } = resInfo;
 
     return (
-        <div className='menu-container'>
-            <h1>{name}</h1>
-            <h4>{avgRating} * {costForTwo}</h4>
-            <h3>Choose as per your taste</h3>
-            <div className='cuisine-list'>
+        <div className="text-center  my-4 w-3/5 mx-auto border-black">
+            <h1 className='font-bold text-lg'>{name}</h1>
+             <h4 className='text'>{avgRating} * {costForTwo}</h4>
+              <div >
                 
                 {cuisines && cuisines.map((cuisine, idx) => (
-                    <div className="cuisine-list" key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 0 8px 8px'  }}>
-                        <span>{cuisine}</span>
-                        <button style={{ marginLeft: '12px', marginRight:'8px', padding: "8px 8px 8px 8px" }}>Add</button>
-                    </div>
-                ))}
-            </div>
+                   
+                         <span key={idx}>{cuisine + ", "}</span>
+                         
+                   
+                 ))}
+            </div> 
+
+        
+
+        <div className="item-category-header">
+                 {
+                resItemCategoryCards.map((category, index) => {
+                    //THIS IS CALLED CONTROLLED COMPONENT
+                    return <RestaurantCategory key={category.card.card.title}
+                    category={category.card.card} 
+                    isExpanded={index===showCategoryIndex ? true:false}
+                    setShowCategoryIndex={() => setShowCategoryIndex(index)}
+                    />;
+                })
+                    
+                 }
         </div>
+
+      
+       
+    
+       </div>
     );
 };
 

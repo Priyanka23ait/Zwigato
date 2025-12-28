@@ -1,10 +1,11 @@
 import React, { useState, useEffect} from 'react';
 import {resList} from '../utils/mockData.js'
-import RestaurantCard from './RestaurantCard.js'
+import RestaurantCard, {RestaurantCardWithVeg} from './RestaurantCard.js'
 import SortIcon from '@mui/icons-material/Sort';
 import Shimmer from './Shimmer.js';
 import {Link} from 'react-router-dom';
 import {RESTAURANTS_URL} from '../utils/Constant.js';
+import useOnlineStatus from '../utils/useOnlineStatus.js';
 
 const Body=()=>{
     let [restaurantList, setRestaurantList] = useState([]); 
@@ -33,11 +34,13 @@ const Body=()=>{
         
     // }
 //Approach[2] async  await will resolve the promise
-     const fetchData = async ()=>{
+const RestaurantWithVegLabel = RestaurantCardWithVeg(RestaurantCard);    
+const fetchData = async ()=>{
         const data = await fetch(RESTAURANTS_URL);
         const json = await data.json();
-        console.log(json.data.cards[1].card.card.gridElements.infoWithStyle.restaurants);
-        var resList = json.data.cards[1].card.card.gridElements.infoWithStyle.restaurants;
+        console.log("Fetched Data:", json);
+        console.log(json.data.data.cards[1].card.card.gridElements.infoWithStyle.restaurants);
+        var resList = json.data.data.cards[1].card.card.gridElements.infoWithStyle.restaurants;
         setRestaurantList(resList)
         setfilteredRestaurants(resList);
         
@@ -51,19 +54,22 @@ const Body=()=>{
         setfilteredRestaurants(searchResults);
         console.log(searchResults);
     }
-
+    const onlineStatus = useOnlineStatus();
+    if(onlineStatus === false) {return <h1>
+    You are offline.. Please check your internet connection!
+    </h1>}
     if (restaurantList.length ===0) { return <Shimmer/>; }    
     return (
     <div>
         <div className="filter-search-container">
-        <div className='search-container'>
-            <div className='search-input'>
+        <div className='search-container '>
+            <div className='px-12 py-1 search-input'>
                 <input type='text' 
                 placeholder='Search for restaurants'
                  value={searchText} 
                  onChange={(e) => setSearchText(e.target.value)}
                 />
-                <button className='search-btn' onClick={()=>{handleSearch()}} > Search</button>
+                <button className='bg-blue-400 shadow-blue-500 rounded-lg text-white px-4 py-1 hover:bg-blue-600 focus:ring-2' onClick={()=>{handleSearch()}} > Search</button>
             </div>
 
         </div>
@@ -79,11 +85,14 @@ const Body=()=>{
             </SortIcon>
         </div>
        </div>
-        <div className='restaurant-container'>
+        <div className='restaurant-container px-8 py-4 '>
             {
             filteredRestaurants.map((restaurant)=>(
+                console.log(restaurant),
                 <Link to={'/restaurant/'+ restaurant.info.id} key={restaurant.info.id} >
-               <RestaurantCard  resObj={restaurant}/>
+                    { (restaurant.info.veg != undefined && restaurant.info.veg === true)?
+                <RestaurantWithVegLabel  RestauranctCard={RestaurantCard} resObj={restaurant}/> : <RestaurantCard  resObj={restaurant}/>}
+               
                </Link>
             ))
             }

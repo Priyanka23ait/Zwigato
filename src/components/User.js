@@ -11,7 +11,8 @@ class User extends React.Component {
     
     }
 
-    async componentDidMount() {await fetch("https://api.github.com/users/priyanka23ait")
+    async componentDidMount() {
+        await fetch("https://api.github.com/users/priyanka23ait")
         .then((res) => res.json())
         .then((data) => {
             console.log(data);
@@ -22,17 +23,24 @@ class User extends React.Component {
     }
     
     render(){ 
-        let {login ,avatar_url} = this.state.userInfo;        
+        let {login ,location, avatar_url} = this.state.userInfo;        
         return (
            
             <div className="user-class">
 
-               <button onClick={()=>{
+               {/* <button onClick={()=>{
                      this.setState({count: this.state.count + 1})
                }}>Increment</button> 
-                <h1>User Component</h1>
-                <h2>Name: {login}</h2>
-                <h2>location: {avatar_url}</h2>
+                <h1>Count: {this.state.count} </h1> */}
+                <div className="user-image">
+                    <img src={avatar_url} alt="user-image" width="100" height="100"/>
+                </div>
+                <div className="user-data">
+
+                    <h2>Name: {login}</h2>
+                    <h2>Location: {location}</h2>
+                </div>
+               
             </div>
         )
     }

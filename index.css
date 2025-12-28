@@ -1,3 +1,13 @@
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+
+@import "tailwindcss";
+
+
+ 
  a {
    text-decoration: none;
    color: inherit;
@@ -7,7 +17,7 @@
 
 a:hover {
   transform: scale(1.1);
-  z-index: 0.3;
+  z-index: 0.2;
  }
 .logo > a img   {
 max-width: 100px;
@@ -47,24 +57,22 @@ max-height: 100px;
 }
  .restaurant-container{
     display: flex;
-    flex-wrap: wrap;
-    
-   
+    flex-wrap: wrap;  
  
 } 
 
 .res-image{
-    width:200px;
-    height:150px;
-    
+    width:220px;
+    height:150px;   
     
 }
 
 .res-card{
-   margin: 5px;
-      padding: 5px;
-       width: 200px;
+   margin: 17px;
+      padding: 10px;
+       width: 220px;
        background-color:rgb(235, 240, 243);
+       height: 300px;
    
 }
 
@@ -163,4 +171,42 @@ margin-top: 25px;
   border-bottom: 1px solid #888;
   padding: 8px 0;
   margin: 4px 0;
+}
+.user-class {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* image left, data right */
+  gap: 20px;
+  padding: 16px;
+  width: 100%;
+  max-width: 1000px;
+  margin: 24px auto; /* centers container on page */
+  box-sizing: border-box;
+  border-color: gray;
+  border: 1px solid #ccc;
+}
+
+.user-image {
+  flex: 0 0 auto;
+}
+
+.user-image img {
+  width: 100px;
+  height: 100px;
+  border-radius: 90%;
+  margin-left: 50px;
+  object-fit: cover;
+  display: block;
+}
+
+.user-data {
+  flex: 1 1 auto;
+  text-align: left; /* keep data on the right side */
+  padding-left: 300px 
+}
+
+/* Contact page: center contact info text */
+.contact-info {
+  text-align: center;
+  margin-top: 12px;
 }

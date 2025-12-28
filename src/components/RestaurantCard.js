@@ -5,22 +5,32 @@ import ReactDOM from "react-dom/client"
 
 const RestaurantCard = ({resObj}) =>{
     return (
-    <div className="res-card">
+    <div className="res-card m-16 hover:shadow-md hover:shadow-cyan-400">
                 
     
         <img className="res-image" 
-             src ={"https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/" 
-                + resObj.info.cloudinaryImageId} />
-        <h3>{resObj.info.name} </h3>
-        <p>{resObj.info.cuisines + "," }</p>
-        <p>{resObj.info.costForTwo}</p>
+             src ={ resObj.info.cloudinaryImageId} />
+        <h3 className="text-black-90 font-bold ">{resObj.info.name} </h3>
+        <p className="">{resObj.info.cuisines + "," }</p>
+        <p className="">{resObj.info.costForTwo}</p>
         
-        <p>{resObj.info.avgRating}</p>
+        <p className="">{resObj.info.avgRating}</p>
                 
    
         
     </div>
     )
+}
+
+export const RestaurantCardWithVeg = (RestauranctCard) =>{
+    return (props)=>{
+        return(
+            <div className="res-card-veg ">
+            <label className="bg-green-950 text-green-100 absolute">Pure Veg 🌿</label>
+            <RestauranctCard {...props}/>
+            </div>
+        )
+    }
 }
 
 export default RestaurantCard;
